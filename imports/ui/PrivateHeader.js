@@ -1,8 +1,9 @@
 import React from "react";
 import propTypes from "prop-types";
 import { Accounts } from "meteor/accounts-base";
+import { withTracker } from "meteor/react-meteor-data";
 
-const PrivateHeader = props => {
+export const PrivateHeader = props => {
   return (
     <div className="header">
       <div className="header__content">
@@ -10,7 +11,7 @@ const PrivateHeader = props => {
         <button
           className="button button--link-text"
           onClick={() => {
-            Accounts.logout();
+            props.handleLogout();
           }}
         >
           Logout
@@ -21,7 +22,12 @@ const PrivateHeader = props => {
 };
 
 PrivateHeader.prototype = {
-  title: propTypes.string.isRequired
+  title: propTypes.string.isRequired,
+  handleLogout: propTypes.func.isRequired
 };
 
-export default PrivateHeader;
+export default withTracker(() => {
+  return {
+    handleLogout: () => Accounts.logout()
+  };
+})(PrivateHeader);
